@@ -11,6 +11,7 @@ const { HTTP_CODES } = require("../config/Enum");
 
 const privs = require("../config/role_privileges");
 const CustomError = require("./Error");
+const Enum = require("../config/Enum")
 
 module.exports=function(){
     let strategy = new Strategy({
@@ -57,6 +58,20 @@ module.exports=function(){
         },
         authenticate: function (){
             return passport.authenticate("jwt",{session:false})
+        },
+        checkRoles:(...expectedRoles)=>{
+            return (req,res,next)=>{
+                let i=0
+                let privileges=req.user.roles.map(x => x.key)
+
+                while(i<expectedRoles.length&&!privileges.includes(expectedRoles[i])) i++;
+
+                if (i>= expectedRoles.length) {
+                   let response = Response.errorResponse(new CustomError(HTTP_CODES.UNAUTHORIZED, "Need Permission", "Need Permission"));
+                    return res.status(response.code).json(response);
+                }
+                return next();
+            }
         }
     }
 }
