@@ -1,6 +1,6 @@
 var express = require("express");
 const bcrypt = require("bcrypt-nodejs");
-const is = require("is_js");
+const validator = require("validator");
 const Users = require("../db/models/Users");
 const Response = require("../lib/Response");
 const CustomError = require("../lib/Error");
@@ -30,13 +30,13 @@ router.post("/register", async (req, res) => {
       );
     }
 
-    if (is.not.email(body.email)) {
-      throw new CustomError(
-        Enum.HTTP_CODES.BAD_REQUEST,
-        "Validation Error!",
-        "email field must be an emai format"
-      );
-    }
+    if (!validator.isEmail(body.email)) {
+  throw new CustomError(
+    Enum.HTTP_CODES.BAD_REQUEST,
+    "Validation Error!",
+    "email field must be an email format"
+  );
+}
 
     if (!body.password) {
       throw new CustomError(
@@ -139,7 +139,11 @@ router.post("/add", auth.checkRoles("user_add"), async (req, res) => {
   try {
     if (!body.email) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language), i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["email"]));
 
-    if (is.not.email(body.email)) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language), i18n.translate("USERS.EMAIL_FORMAT_ERROR", req.user.language));
+   if (!validator.isEmail(body.email)) throw new CustomError(
+  Enum.HTTP_CODES.BAD_REQUEST, 
+  i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language), 
+  i18n.translate("USERS.EMAIL_FORMAT_ERROR", req.user.language)
+);
 
     if (!body.password) throw new CustomError(Enum.HTTP_CODES.BAD_REQUEST, i18n.translate("COMMON.VALIDATION_ERROR_TITLE", req.user.language), i18n.translate("COMMON.FIELD_MUST_BE_FILLED", req.user.language, ["password"]));
 

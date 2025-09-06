@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Enum = require("../../config/Enum");
-const is = require("is_js");
+const validator = require("validator");
 const CustomError = require("../../lib/Error");
 const bcrypt = require("bcrypt-nodejs");
 const { DEFAULT_LANG } = require("../../config");
