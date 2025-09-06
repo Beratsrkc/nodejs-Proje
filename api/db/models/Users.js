@@ -27,7 +27,7 @@ class Users extends mongoose.Model{
     }
 
    static validateFieldsBeforeAuth(email,password){
-        if (typeof password !=="string"|| password.length<Enum.PASS_LENGTH || is.not.email(email))
+        if (typeof password !=="string"|| password.length<Enum.PASS_LENGTH || !validator.isEmail(email))
             throw new CustomError(Enum.HTTP_CODES.UNAUTHORIZED,"Validation Error","email or password wrong")
         return null;
     }

@@ -18,6 +18,13 @@ router.get("/",auth.checkRoles("role_view"), async (req, res) => {
   try {
     let roles = await Roles.find({});
 
+    roles=JSON.parse(JSON.stringify(roles))
+
+    for (let i=0;i<roles.length;i++){
+      let permissions=await RolePrivileges.find({role_id:roles[i]._id})
+      roles[i].permissions=permissions
+    }
+
     res.json(Response.successResponse(roles));
   } catch (error) {
     let errorResponse = Response.errorResponse(error);
